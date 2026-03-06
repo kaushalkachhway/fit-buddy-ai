@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - FitBuddy AI</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+            min-height: 100vh;
+            color: #fff;
+            padding: 30px 15px;
+        }
+        .container { max-width: 1000px; margin: 0 auto; }
+        h1 {
+            text-align: center;
+            font-size: 2rem;
+            margin-bottom: 8px;
+            background: linear-gradient(90deg, #00d2ff, #3a7bd5);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .subtitle { text-align: center; color: #aaa; margin-bottom: 30px; }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: rgba(255,255,255,0.05);
+            border-radius: 12px;
+            overflow: hidden;
+        }
+        th {
+            background: rgba(58,123,213,0.3);
+            padding: 14px 16px;
+            text-align: left;
+            font-size: 0.9rem;
+            color: #7fb3ff;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        td {
+            padding: 12px 16px;
+            border-bottom: 1px solid rgba(255,255,255,0.06);
+            font-size: 0.9rem;
+            color: #ccc;
+        }
+        tr:hover td { background: rgba(255,255,255,0.03); }
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #777;
+        }
+        .count-badge {
+            display: inline-block;
+            background: rgba(0,210,255,0.15);
+            color: #00d2ff;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            margin-bottom: 20px;
+        }
+        .actions { text-align: center; margin-top: 25px; }
+        a button {
+            padding: 12px 30px;
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.2);
+            border-radius: 10px;
+            color: #fff;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        a button:hover { transform: translateY(-2px); }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📊 Admin Dashboard</h1>
+        <p class="subtitle">All registered FitBuddy users</p>
+
+        <div style="text-align:center;">
+            <span class="count-badge">Total Users: {{ users | length }}</span>
+        </div>
+
+        {% if users %}
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Age</th>
+                    <th>Gender</th>
+                    <th>Goal</th>
+                    <th>Level</th>
+                    <th>Feedback</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for u in users %}
+                <tr>
+                    <td>{{ u.id }}</td>
+                    <td>{{ u.name }}</td>
+                    <td>{{ u.age }}</td>
+                    <td>{{ u.gender }}</td>
+                    <td>{{ u.goal }}</td>
+                    <td>{{ u.fitness_level }}</td>
+                    <td>{{ u.feedback or "—" }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <div class="empty-state">
+            <p>No users yet. Be the first to generate a fitness plan!</p>
+        </div>
+        {% endif %}
+
+        <div class="actions">
+            <a href="/"><button>🏠 Back to Home</button></a>
+        </div>
+    </div>
+</body>
+</html>

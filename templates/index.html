@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FitBuddy AI - Your Personal Fitness Planner</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #fff;
+        }
+        .container {
+            background: rgba(255,255,255,0.07);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 520px;
+            width: 90%;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        h1 {
+            text-align: center;
+            font-size: 2rem;
+            margin-bottom: 8px;
+            background: linear-gradient(90deg, #00d2ff, #3a7bd5);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .subtitle { text-align: center; color: #aaa; margin-bottom: 30px; font-size: 0.95rem; }
+        .error { background: #ff4444; color: #fff; padding: 10px; border-radius: 8px; margin-bottom: 15px; text-align: center; }
+        label { display: block; margin-bottom: 5px; font-weight: 600; font-size: 0.9rem; color: #ccc; }
+        input, select {
+            width: 100%;
+            padding: 12px 15px;
+            margin-bottom: 18px;
+            border: 1px solid rgba(255,255,255,0.15);
+            border-radius: 10px;
+            background: rgba(255,255,255,0.05);
+            color: #fff;
+            font-size: 1rem;
+            outline: none;
+            transition: border 0.3s;
+        }
+        input:focus, select:focus { border-color: #3a7bd5; }
+        input::placeholder { color: #777; }
+        select option { background: #24243e; color: #fff; }
+        button {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(90deg, #00d2ff, #3a7bd5);
+            border: none;
+            border-radius: 10px;
+            color: #fff;
+            font-size: 1.1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        button:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(58,123,213,0.4); }
+        .row { display: flex; gap: 15px; }
+        .row > div { flex: 1; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🏋️ FitBuddy AI</h1>
+        <p class="subtitle">Your AI-Powered Personal Fitness Planner</p>
+
+        {% if error %}
+        <div class="error">{{ error }}</div>
+        {% endif %}
+
+        <form action="/generate" method="post">
+            <label for="name">Full Name</label>
+            <input type="text" id="name" name="name" placeholder="Enter your name" required>
+
+            <div class="row">
+                <div>
+                    <label for="age">Age</label>
+                    <input type="number" id="age" name="age" placeholder="e.g. 25" min="10" max="100" required>
+                </div>
+                <div>
+                    <label for="gender">Gender</label>
+                    <select id="gender" name="gender" required>
+                        <option value="" disabled selected>Select</option>
+                        <option value="Male">Male</option>
+                        <option value="Female">Female</option>
+                        <option value="Other">Other</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="row">
+                <div>
+                    <label for="weight">Weight (kg)</label>
+                    <input type="text" id="weight" name="weight" placeholder="e.g. 70kg" required>
+                </div>
+                <div>
+                    <label for="height">Height (cm)</label>
+                    <input type="text" id="height" name="height" placeholder="e.g. 175cm" required>
+                </div>
+            </div>
+
+            <label for="goal">Fitness Goal</label>
+            <select id="goal" name="goal" required>
+                <option value="" disabled selected>Select your goal</option>
+                <option value="Weight Loss">Weight Loss</option>
+                <option value="Muscle Gain">Muscle Gain</option>
+                <option value="Stay Fit">Stay Fit</option>
+                <option value="Improve Endurance">Improve Endurance</option>
+                <option value="Flexibility">Flexibility</option>
+            </select>
+
+            <label for="fitness_level">Fitness Level</label>
+            <select id="fitness_level" name="fitness_level" required>
+                <option value="" disabled selected>Select your level</option>
+                <option value="Beginner">Beginner</option>
+                <option value="Intermediate">Intermediate</option>
+                <option value="Advanced">Advanced</option>
+            </select>
+
+            <button type="submit">🚀 Generate My Fitness Plan</button>
+        </form>
+    </div>
+</body>
+</html>
