@@ -8,6 +8,7 @@ class UserInput(BaseModel):
     weight: str = Field(..., min_length=1, max_length=20)
     height: str = Field(..., min_length=1, max_length=20)
     goal: str = Field(..., min_length=1, max_length=100)
+    intensity: str = Field(..., min_length=1, max_length=20)
     fitness_level: str = Field(..., min_length=1, max_length=50)
 
 

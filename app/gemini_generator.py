@@ -5,35 +5,31 @@ import os
 GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY", "YOUR_API_KEY_HERE")
 genai.configure(api_key=GEMINI_API_KEY)
 
+model = genai.GenerativeModel("gemini-1.5-pro")
 
-def generate_workout_plan(name: str, age: int, gender: str, weight: str,
-                          height: str, goal: str, fitness_level: str) -> str:
-    """Generate a personalized workout plan using Gemini Pro."""
+
+# Function to generate workout
+def generate_workout_gemini(user_input):
     prompt = f"""
-    Create a detailed, personalized weekly workout plan for the following user:
+    You are a professional fitness trainer.
 
-    Name: {name}
-    Age: {age}
-    Gender: {gender}
-    Weight: {weight}
-    Height: {height}
-    Fitness Goal: {goal}
-    Fitness Level: {fitness_level}
+    Create a personalized, structured 7-day workout plan for someone with the goal of **{user_input['goal']}**, and prefers **{user_input['intensity']}** intensity workouts.
 
-    Please include:
-    1. A 7-day workout schedule
-    2. Specific exercises with sets and reps
-    3. Rest day recommendations
-    4. Warm-up and cool-down suggestions
-    5. Safety tips based on their fitness level
+    Each day must include:
+    - A warm-up (5–10 mins)
+    - Main workout (targeted exercises, sets & reps)
+    - Cooldown or recovery tip
 
-    Format the plan in a clear, easy-to-follow structure with HTML formatting
-    (use <h3>, <ul>, <li>, <strong>, <p> tags for readability).
+    Format:
+    Day 1:
+    Warm-up: ...
+    Main Workout: ...
+    Cooldown: ...
+    (Repeat for Day 2–7)
     """
 
     try:
-        model = genai.GenerativeModel("gemini-pro")
         response = model.generate_content(prompt)
         return response.text
     except Exception as e:
-        return f"<p>Error generating workout plan: {e}</p>"
+        return f"Error: {e}"

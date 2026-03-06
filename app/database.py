@@ -22,6 +22,7 @@ class User(Base):
     weight = Column(String(20), nullable=False)
     height = Column(String(20), nullable=False)
     goal = Column(String(100), nullable=False)
+    intensity = Column(String(20), nullable=False, default="Medium")
     fitness_level = Column(String(50), nullable=False)
     workout_plan = Column(Text, nullable=True)
     nutrition_tip = Column(Text, nullable=True)

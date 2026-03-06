@@ -5,7 +5,7 @@ from sqlalchemy.orm import Session
 from pathlib import Path
 
 from app.database import get_db, User
-from app.gemini_generator import generate_workout_plan
+from app.gemini_generator import generate_workout_gemini
 from app.gemini_flash_generator import generate_nutrition_tip
 from app.updated_plan import update_plan_with_feedback
 
@@ -30,12 +30,16 @@ async def generate_plan(
     weight: str = Form(...),
     height: str = Form(...),
     goal: str = Form(...),
+    intensity: str = Form(...),
     fitness_level: str = Form(...),
     db: Session = Depends(get_db),
 ):
     """Generate workout plan and nutrition tip, save user to DB."""
+    # Build user_input dict for Gemini generator
+    user_input = {"goal": goal, "intensity": intensity}
+
     # Generate AI content
-    workout_plan = generate_workout_plan(name, age, gender, weight, height, goal, fitness_level)
+    workout_plan = generate_workout_gemini(user_input)
     nutrition_tip = generate_nutrition_tip(goal, weight, fitness_level)
 
     # Save to database
@@ -46,6 +50,7 @@ async def generate_plan(
         weight=weight,
         height=height,
         goal=goal,
+        intensity=intensity,
         fitness_level=fitness_level,
         workout_plan=workout_plan,
         nutrition_tip=nutrition_tip,

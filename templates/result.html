@@ -46,6 +46,8 @@
         .card-content h3 { color: #3a7bd5; margin-top: 12px; }
         .card-content ul { padding-left: 20px; }
         .card-content li { margin-bottom: 5px; }
+        .workout-blocks { white-space: pre-line; }
+        .workout-blocks strong { color: #00d2ff; }
         .success-msg {
             background: rgba(0,210,100,0.2);
             border: 1px solid rgba(0,210,100,0.4);
@@ -119,14 +121,15 @@
                 <span class="info-badge">Weight: {{ user.weight }}</span>
                 <span class="info-badge">Height: {{ user.height }}</span>
                 <span class="info-badge">Goal: {{ user.goal }}</span>
+                <span class="info-badge">Intensity: {{ user.intensity }}</span>
                 <span class="info-badge">Level: {{ user.fitness_level }}</span>
             </div>
         </div>
 
         <!-- Workout Plan Card -->
         <div class="card">
-            <h2>💪 Your Workout Plan</h2>
-            <div class="card-content">
+            <h2>💪 Your 7-Day Workout Plan</h2>
+            <div class="card-content workout-blocks">
                 {{ workout_plan | safe }}
             </div>
         </div>
