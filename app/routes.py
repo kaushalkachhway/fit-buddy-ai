@@ -21,6 +21,12 @@ async def home(request: Request):
     return templates.TemplateResponse("index.html", {"request": request})
 
 
+@router.get("/generate", response_class=HTMLResponse)
+async def generate_page(request: Request):
+    """Redirect GET /generate to the home page."""
+    return RedirectResponse(url="/", status_code=303)
+
+
 @router.post("/generate", response_class=HTMLResponse)
 async def generate_plan(
     request: Request,
