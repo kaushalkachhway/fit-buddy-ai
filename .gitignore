@@ -3,6 +3,9 @@ fitbuddy-env/
 .venv/
 venv/
 
+# Environment variables
+.env
+
 # Database
 fitbuddy.db
 

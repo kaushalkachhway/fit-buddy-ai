@@ -21,7 +21,7 @@ def update_plan_with_feedback(original_plan: str, feedback: str) -> str:
     """
 
     try:
-        model = genai.GenerativeModel("gemini-pro")
+        model = genai.GenerativeModel("gemini-2.0-flash-lite")
         response = model.generate_content(prompt)
         return response.text
     except Exception as e:

@@ -1,13 +1,15 @@
 import os
 from pathlib import Path
+from dotenv import load_dotenv
 
 from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
 
+BASE_DIR = Path(__file__).resolve().parent.parent
+load_dotenv(BASE_DIR / ".env")
+
 from app.database import init_db
 from app.routes import router
-
-BASE_DIR = Path(__file__).resolve().parent.parent
 
 app = FastAPI(title="FitBuddy AI", description="AI-Powered Fitness Plan Generator")
 

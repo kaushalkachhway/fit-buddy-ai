@@ -5,7 +5,7 @@ from sqlalchemy.orm import Session
 from pathlib import Path
 
 from app.database import get_db, User
-from app.gemini_generator import generate_workout_gemini
+from app.gemini_generator import generate_workout_gemini, validate_workout_input
 from app.gemini_flash_generator import generate_nutrition_tip
 from app.updated_plan import update_plan_with_feedback
 
@@ -35,39 +35,52 @@ async def generate_plan(
     db: Session = Depends(get_db),
 ):
     """Generate workout plan and nutrition tip, save user to DB."""
-    # Build user_input dict for Gemini generator
-    user_input = {"goal": goal, "intensity": intensity}
+    try:
+        # Validate input
+        is_valid, error_msg = validate_workout_input(goal, intensity)
+        if not is_valid:
+            return templates.TemplateResponse(
+                "index.html", {"request": request, "error": error_msg}
+            )
 
-    # Generate AI content
-    workout_plan = generate_workout_gemini(user_input)
-    nutrition_tip = generate_nutrition_tip(goal, weight, fitness_level)
+        # Build user_input dict for Gemini generator
+        user_input = {"goal": goal, "intensity": intensity}
 
-    # Save to database
-    user = User(
-        name=name,
-        age=age,
-        gender=gender,
-        weight=weight,
-        height=height,
-        goal=goal,
-        intensity=intensity,
-        fitness_level=fitness_level,
-        workout_plan=workout_plan,
-        nutrition_tip=nutrition_tip,
-    )
-    db.add(user)
-    db.commit()
-    db.refresh(user)
+        # Generate AI content
+        workout_plan = generate_workout_gemini(user_input)
+        nutrition_tip = generate_nutrition_tip(goal, weight, fitness_level)
 
-    return templates.TemplateResponse(
-        "result.html",
-        {
-            "request": request,
-            "user": user,
-            "workout_plan": workout_plan,
-            "nutrition_tip": nutrition_tip,
-        },
-    )
+        # Save to database
+        user = User(
+            name=name,
+            age=age,
+            gender=gender,
+            weight=weight,
+            height=height,
+            goal=goal,
+            intensity=intensity,
+            fitness_level=fitness_level,
+            workout_plan=workout_plan,
+            nutrition_tip=nutrition_tip,
+        )
+        db.add(user)
+        db.commit()
+        db.refresh(user)
+
+        return templates.TemplateResponse(
+            "result.html",
+            {
+                "request": request,
+                "user": user,
+                "workout_plan": workout_plan,
+                "nutrition_tip": nutrition_tip,
+            },
+        )
+    except Exception as e:
+        return templates.TemplateResponse(
+            "index.html",
+            {"request": request, "error": f"Something went wrong: {e}. Please try again."},
+        )
 
 
 @router.post("/feedback", response_class=HTMLResponse)

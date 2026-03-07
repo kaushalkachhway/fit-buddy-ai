@@ -25,7 +25,7 @@ def generate_nutrition_tip(goal: str, weight: str, fitness_level: str) -> str:
     """
 
     try:
-        model = genai.GenerativeModel("gemini-1.5-flash")
+        model = genai.GenerativeModel("gemini-2.0-flash-lite")
         response = model.generate_content(prompt)
         return response.text
     except Exception as e:
