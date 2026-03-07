@@ -1,42 +1,98 @@
-from sqlalchemy import create_engine, Column, Integer, String, Text, DateTime
-from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import sessionmaker
-from datetime import datetime, timezone
-from pathlib import Path
+from sqlalchemy import Column, Integer, String, Float, ForeignKey, Text, create_engine
+from sqlalchemy.orm import declarative_base, sessionmaker, relationship, Mapped, mapped_column
 
-BASE_DIR = Path(__file__).resolve().parent.parent
-DATABASE_URL = f"sqlite:///{BASE_DIR / 'fitbuddy.db'}"
-
-engine = create_engine(DATABASE_URL, connect_args={"check_same_thread": False})
-SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+# Base setup
 Base = declarative_base()
+engine = create_engine("sqlite:///fitness.db", echo=True)
+SessionLocal = sessionmaker(bind=engine)
 
 
+# User model
 class User(Base):
     __tablename__ = "users"
 
-    id = Column(Integer, primary_key=True, index=True)
-    name = Column(String(100), nullable=False)
-    age = Column(Integer, nullable=False)
-    gender = Column(String(20), nullable=False)
-    weight = Column(String(20), nullable=False)
-    height = Column(String(20), nullable=False)
-    goal = Column(String(100), nullable=False)
-    intensity = Column(String(20), nullable=False, default="Medium")
-    fitness_level = Column(String(50), nullable=False)
-    workout_plan = Column(Text, nullable=True)
-    nutrition_tip = Column(Text, nullable=True)
-    feedback = Column(Text, nullable=True)
-    created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, index=True)
+    name: Mapped[str] = mapped_column(String, nullable=False)
+    age: Mapped[int] = mapped_column(Integer, nullable=False)
+    weight: Mapped[float] = mapped_column(Float, nullable=False)
+    goal: Mapped[str] = mapped_column(String, nullable=False)
+    intensity: Mapped[str] = mapped_column(String, nullable=False)
+    schedule: Mapped[int] = mapped_column(Integer, default=7)
+
+    plans = relationship("WorkoutPlan", back_populates="user")
 
 
-def get_db():
+# WorkoutPlan model
+class WorkoutPlan(Base):
+    __tablename__ = "workout_plans"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, index=True)
+    user_id: Mapped[int] = mapped_column(Integer, ForeignKey("users.id"))
+    original_plan: Mapped[str] = mapped_column(Text, nullable=False)
+    updated_plan: Mapped[str] = mapped_column(Text, nullable=True)  # feedback-based updates
+
+    user = relationship("User", back_populates="plans")
+
+
+# Create tables
+Base.metadata.create_all(bind=engine)
+
+
+# Save or update user info
+def save_user(user_id: int, name: str, age: int, weight: float, goal: str, intensity: str):
     db = SessionLocal()
-    try:
-        yield db
-    finally:
-        db.close()
+    existing = db.query(User).filter_by(id=user_id).first()
+    if existing:
+        existing.name = name
+        existing.age = age
+        existing.weight = weight
+        existing.goal = goal
+        existing.intensity = intensity
+    else:
+        user = User(
+            id=user_id,
+            name=name,
+            age=age,
+            weight=weight,
+            goal=goal,
+            intensity=intensity,
+            schedule=7
+        )
+        db.add(user)
+    db.commit()
+    db.close()
 
 
-def init_db():
-    Base.metadata.create_all(bind=engine)
+# Save original plan
+def save_plan(user_id: int, plan: str):
+    db = SessionLocal()
+    workout = WorkoutPlan(user_id=user_id, original_plan=plan)
+    db.add(workout)
+    db.commit()
+    db.close()
+
+
+# Update plan with feedback
+def update_plan(user_id: int, updated_text: str):
+    db = SessionLocal()
+    workout = db.query(WorkoutPlan).filter_by(user_id=user_id).order_by(WorkoutPlan.id.desc()).first()
+    if workout:
+        workout.updated_plan = updated_text
+        db.commit()
+    db.close()
+
+
+# Get original plan
+def get_original_plan(user_id: int):
+    db = SessionLocal()
+    workout = db.query(WorkoutPlan).filter_by(user_id=user_id).order_by(WorkoutPlan.id.desc()).first()
+    db.close()
+    return workout.original_plan if workout else None
+
+
+# Get user info
+def get_user(user_id: int):
+    db = SessionLocal()
+    user = db.query(User).filter_by(id=user_id).first()
+    db.close()
+    return user
