@@ -23,7 +23,7 @@ Google Gemini was selected for this project because:
 Gemini is used to:
 - Generate personalized -> 7-day workout plans
 - Modify workout plans based on -> user feedback
-- Provide -> nutrition and recovery tips**
+- Provide -> nutrition and recovery tips
 
 This allows the application to create dynamic and personalized fitness guidance.
 
@@ -67,4 +67,50 @@ This allows the application to create dynamic and personalized fitness guidance.
 - Document lessons learned
 - Celebrate milestones
 - Plan next-gen features
-- 
+
+#Activity 5.1 – Preparing the Application for Local Deployment objective
+Prepare the FitBuddy application so that it can be run and tested on a local machine for development and debugging.
+
+Step 1: Clone the Repository
+First download the project from GitHub.
+-git clone https://github.com/<repository-link>
+Then move into the project folder.
+-cd fit-buddy-ai
+
+Step 2: Create a Virtual Environment
+Create a virtual environment to manage dependencies.
+-python -m venv venv
+Activate the virtual environment.
+-Windows
+venv\Scripts\activate
+-Mac/Linux
+source venv/bin/activate
+
+Step 3: Install Required Dependencies
+Install the libraries listed in requirements.txt.
+-pip install -r requirements.txt
+These dependencies include:
+-FastAPI
+-Uvicorn
+-Google Generative AI SDK
+-SQLAlchemy
+-Jinja2
+
+Step 4: Configure Environment Variables
+Create a .env file in the project root.
+Add the Gemini API key:
+-> GEMINI_API_KEY=your_api_key_here
+This key allows the application to connect with the Google Gemini AI model.
+
+Step 5: Run the FastAPI Application
+Start the application using Uvicorn.
+uvicorn app.main:app --reload
+The --reload flag enables automatic server restart during development.
+
+Step 6: Access the Application
+Open a browser and go to:
+-http://127.0.0.1:8000
+You can also access the API documentation at:
+-http://127.0.0.1:8000/docs
+This interface allows testing the API endpoints.
+ 
